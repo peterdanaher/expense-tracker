@@ -1,80 +1,54 @@
 package com.example.expense_tracker.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AccessLevel;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+
 import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Transaction {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
+    @NotBlank(message = "Type is required")
     private String type;
-    private double amount;
+
+    @NotNull(message = "Amount is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than zero")
+    private Double amount;
+
+    @NotBlank(message = "Category is required")
     private String category;
-    private String description;
+
+    @NotNull(message = "Date is required")
+    @PastOrPresent(message = "Date cannot be in the future")
     private LocalDate date;
 
-    public Transaction() {
-    }
+    private String description;
 
     public Transaction(String type, double amount, String category, String description, LocalDate date) {
         this.type = type;
         this.amount = amount;
         this.category = category;
         this.description = description;
-        this.date = date;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
         this.date = date;
     }
 }
