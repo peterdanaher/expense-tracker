@@ -7,8 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.expense_tracker.exception.TransactionNotFoundException;
-
 import java.util.HashMap;
 import java.util.Map;
 
