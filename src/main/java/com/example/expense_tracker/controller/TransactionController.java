@@ -1,7 +1,7 @@
 package com.example.expense_tracker.controller;
 
-import com.example.expense_tracker.model.Transaction;
 import com.example.expense_tracker.dto.TransactionRequest;
+import com.example.expense_tracker.dto.TransactionResponse;
 import com.example.expense_tracker.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +20,17 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<Transaction> getAllTransactions() {
+    public List<TransactionResponse> getAllTransactions() {
         return service.getAllTransactions();
     }
 
     @PostMapping
-    public Transaction createTransaction(@Valid @RequestBody TransactionRequest request) {
+    public TransactionResponse createTransaction(@Valid @RequestBody TransactionRequest request) {
         return service.createTransaction(request);
     }
 
     @PutMapping("/{id}")
-    public Transaction updateTransaction(
+    public TransactionResponse updateTransaction(
             @PathVariable Long id,
             @Valid @RequestBody TransactionRequest request
     ) {

@@ -1,8 +1,10 @@
 package com.example.expense_tracker.service;
 
+import com.example.expense_tracker.mapper.TransactionMapper;
 import com.example.expense_tracker.model.Transaction;
 import com.example.expense_tracker.repository.TransactionRepository;
 import com.example.expense_tracker.dto.TransactionRequest;
+import com.example.expense_tracker.dto.TransactionResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,38 +13,34 @@ import java.util.List;
 public class TransactionService {
     
     private final TransactionRepository repository;
+    private final TransactionMapper mapper;
 
-    public TransactionService(TransactionRepository repository) {
+    public TransactionService(TransactionRepository repository, TransactionMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
-    public List<Transaction> getAllTransactions() {
-        return repository.findAll();
+    public List<TransactionResponse> getAllTransactions() {
+        return repository.findAll()
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 
-    public Transaction createTransaction(TransactionRequest request) {
-        Transaction transaction = new Transaction();
-
-        transaction.setType(request.getType());
-        transaction.setAmount(request.getAmount());
-        transaction.setCategory(request.getCategory());
-        transaction.setDate(request.getDate());
-        transaction.setDescription(request.getDescription());
-
-        return repository.save(transaction);
+    public TransactionResponse createTransaction(TransactionRequest request) {
+        Transaction transaction = mapper.toEntity(request);
+        Transaction saved = repository.save(transaction);
+        return mapper.toResponse(saved);
     }
 
-    public Transaction updateTransaction(Long id, TransactionRequest request) {
+    public TransactionResponse updateTransaction(Long id, TransactionRequest request) {
         Transaction existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + id));
 
-        existing.setType(request.getType());
-        existing.setAmount(request.getAmount());
-        existing.setCategory(request.getCategory());
-        existing.setDate(request.getDate());
-        existing.setDescription(request.getDescription());
+        mapper.updateEntity(existing, request);
+        Transaction updated = repository.save(existing);
 
-        return repository.save(existing);
+        return mapper.toResponse(updated);
     }
 
     public void deleteTransaction(Long id) {
