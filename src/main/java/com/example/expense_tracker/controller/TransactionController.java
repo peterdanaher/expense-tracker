@@ -1,6 +1,7 @@
 package com.example.expense_tracker.controller;
 
 import com.example.expense_tracker.model.Transaction;
+import com.example.expense_tracker.dto.TransactionRequest;
 import com.example.expense_tracker.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +25,16 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Transaction createTransaction(@Valid @RequestBody Transaction transaction) {
-        return service.createTransaction(transaction);
+    public Transaction createTransaction(@Valid @RequestBody TransactionRequest request) {
+        return service.createTransaction(request);
     }
 
     @PutMapping("/{id}")
     public Transaction updateTransaction(
             @PathVariable Long id,
-            @Valid @RequestBody Transaction transaction
+            @Valid @RequestBody TransactionRequest request
     ) {
-        return service.updateTransaction(id, transaction);
+        return service.updateTransaction(id, request);
     }
 
     @DeleteMapping("/{id}")
