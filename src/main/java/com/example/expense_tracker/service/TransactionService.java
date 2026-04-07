@@ -1,10 +1,16 @@
 package com.example.expense_tracker.service;
 
+import com.example.expense_tracker.exception.TransactionNotFoundException;
+
 import com.example.expense_tracker.mapper.TransactionMapper;
+
 import com.example.expense_tracker.model.Transaction;
+
 import com.example.expense_tracker.repository.TransactionRepository;
+
 import com.example.expense_tracker.dto.TransactionRequest;
 import com.example.expense_tracker.dto.TransactionResponse;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +41,7 @@ public class TransactionService {
 
     public TransactionResponse updateTransaction(Long id, TransactionRequest request) {
         Transaction existing = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + id));
+                .orElseThrow(() -> new TransactionNotFoundException(id));
 
         mapper.updateEntity(existing, request);
         Transaction updated = repository.save(existing);
@@ -45,7 +51,7 @@ public class TransactionService {
 
     public void deleteTransaction(Long id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Transaction not found with id: " + id);
+            throw new TransactionNotFoundException(id);
         }
         repository.deleteById(id);
     }
