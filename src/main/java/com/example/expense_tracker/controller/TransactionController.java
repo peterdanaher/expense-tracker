@@ -1,7 +1,8 @@
 package com.example.expense_tracker.controller;
 
 import com.example.expense_tracker.model.Transaction;
-import com.example.expense_tracker.repository.TransactionRepository;
+import com.example.expense_tracker.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,24 +12,32 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class TransactionController {
     
-    private final TransactionRepository repository;
+    private final TransactionService service;
 
-    public TransactionController(TransactionRepository repository) {
-        this.repository = repository;
+    public TransactionController(TransactionService service) {
+        this.service = service;
     }
 
     @GetMapping
     public List<Transaction> getAllTransactions() {
-        return repository.findAll();
+        return service.getAllTransactions();
     }
 
     @PostMapping
-    public Transaction createTransaction(@RequestBody Transaction transaction) {
-        return repository.save(transaction);
+    public Transaction createTransaction(@Valid @RequestBody Transaction transaction) {
+        return service.createTransaction(transaction);
+    }
+
+    @PutMapping("/{id}")
+    public Transaction updateTransaction(
+            @PathVariable Long id,
+            @Valid @RequestBody Transaction transaction
+    ) {
+        return service.updateTransaction(id, transaction);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTransaction(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteTransaction(id);
     }
 }
